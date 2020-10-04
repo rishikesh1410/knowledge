@@ -15,3 +15,14 @@ Table (name = 'problems')
 2. problem
 3. solution
 4. link
+
+# Website Design
+
+![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/Website%20Design.png?raw=true)
+
+# Screenshots
+
+![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/allProblems.png?raw=true)
+![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/addProblem.png?raw=true)
+![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/updateProblem.png?raw=true)
+![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/searchProblems.png?raw=true)
