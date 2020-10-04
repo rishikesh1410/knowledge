@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z" crossorigin="anonymous">
+    <title>Knowledge</title>
+    <style> #updateData{ display: none; } </style>
+</head>
+<body>
+
+    <!-- Modal for Add a problem -->
+    <div class="modal fade" id="addaproblem" tabindex="-1" aria-labelledby="addaproblem" aria-hidden="true">
+        <div class="modal-dialog">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="exampleModalLabel">Add / Update a problem</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+                <div class="form">
+
+                    <!-- This field is hidden and will only use while update -->
+                    <div class="form-group">
+                        <input type="hidden" class="form-control" id="id" name="id" placeholder="Enter a Id">
+                    </div>
+                    <div class="form-group">
+                        <label for="problem">Problem</label>
+                        <input type="text" class="form-control" id="problem" name="problem" placeholder="Enter a problem">
+                    </div>
+                    <div class="form-group">
+                        <label for="solution">Solution</label>
+                        <textarea class="form-control" name="solution" id="solution" placeholder="Enter your solution"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="link">Solution link</label>
+                        <input type="text" class="form-control" id="link" name="link" placeholder="Solution link (Optional)">
+                    </div>
+                    <button id="addData" type="button" class="btn btn-secondary" onclick="addData()">Save</button>
+                    <button id="updateData" type="button" class="btn btn-secondary" onclick="UpdateData()">Update</button>
+                </div>
+            </div>
+          </div>
+        </div>
+    </div>
+
+
+    <div class="container-fluid pt-5">
+        <div class="row">
+            <div class="site-heading col-md-5">
+                <h2>Knowledge</h2>
+            </div>
+            <div class="col-md-7 row">
+                <input type="text" placeholder="Search by Subject" class="form-control col-md-9" onkeyup="getAllData(this.value)"/>
+                <div class="col-md-3">
+                    <button id="addProblemBtn" class="btn btn-secondary" data-toggle="modal" data-target="#addaproblem">Add Problem</button>
+                </div>
+            </div>
+        </div>
+        <div class="row p-3">
+            <table class="table">
+                <thead class="thead-light">
+                  <tr>
+                    <th scope="col">S.no</th>
+                    <th scope="col">Problem</th>
+                    <th scope="col">Solution</th>
+                    <th scope="col">Link</th>
+                    <th scope="col">Update</th>
+                    <th scope="col">Delete</th>
+                  </tr>
+                </thead>
+                <tbody id="problems-body">
+                  
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+
+
+<script>
+// Will use ajax to call Rest API and get the data //
+
+// Retrieve All data or data based on search
+function getAllData(search = "") {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            console.log(this.responseText);
+            let problems = JSON.parse(this.responseText);
+            let html = ``;
+            for(let x in problems) {
+                problem = problems[x];
+                html += `<tr>
+                    <th scope="row">`+problem.id+`</th>
+                    <td>`+problem.problem+`</td>
+                    <td>`+problem.solution+`</td>
+                    <td><a href=`+problem.link+`>Solution link</a></td>
+                    <td onclick="Update('`+problem.id+`', '`+problem.problem+`', '`+problem.solution+`', '`+problem.link+`')">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-pencil-square" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M15.502 1.94a.5.5 0 0 1 0 .706L14.459 3.69l-2-2L13.502.646a.5.5 0 0 1 .707 0l1.293 1.293zm-1.75 2.456l-2-2L4.939 9.21a.5.5 0 0 0-.121.196l-.805 2.414a.25.25 0 0 0 .316.316l2.414-.805a.5.5 0 0 0 .196-.12l6.813-6.814z"/>
+                        <path fill-rule="evenodd" d="M1 13.5A1.5 1.5 0 0 0 2.5 15h11a1.5 1.5 0 0 0 1.5-1.5v-6a.5.5 0 0 0-1 0v6a.5.5 0 0 1-.5.5h-11a.5.5 0 0 1-.5-.5v-11a.5.5 0 0 1 .5-.5H9a.5.5 0 0 0 0-1H2.5A1.5 1.5 0 0 0 1 2.5v11z"/>
+                        </svg>
+                    </td>
+                    <td onclick="DeleteData(`+problem.id+`)">
+                        <svg width="1em" height="1em" viewBox="0 0 16 16" class="bi bi-trash-fill" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+                        <path fill-rule="evenodd" d="M2.5 1a1 1 0 0 0-1 1v1a1 1 0 0 0 1 1H3v9a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2V4h.5a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1H10a1 1 0 0 0-1-1H7a1 1 0 0 0-1 1H2.5zm3 4a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7a.5.5 0 0 1 .5-.5zM8 5a.5.5 0 0 1 .5.5v7a.5.5 0 0 1-1 0v-7A.5.5 0 0 1 8 5zm3 .5a.5.5 0 0 0-1 0v7a.5.5 0 0 0 1 0v-7z"/>
+                        </svg>
+                    </td>
+                  </tr>`;
+            }
+            document.getElementById('problems-body').innerHTML = html;
+            
+        }
+    };
+    xhttp.open("GET", "/?problem="+search, true);
+    xhttp.send();
+}
+
+// Add data to database 
+function addData() {
+    let problem = document.getElementById('problem').value;
+    let solution = document.getElementById('solution').value;
+    let link = document.getElementById('link').value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            window.location = '/home';
+        }
+    };
+    xhttp.open("POST", "/addProblem", true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("problem= " + problem + "&solution= " + solution + "&link= " + link);
+}
+
+// Delete data from database
+function DeleteData(id) {
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            window.location = '/home';
+        }
+    };
+    xhttp.open("DELETE", "/deleteProblem/" + id, true);
+    xhttp.send();
+}
+
+// Update data in database
+function UpdateData() {
+    let id = document.getElementById('id').value;
+    let problem = document.getElementById('problem').value;
+    let solution = document.getElementById('solution').value;
+    let link = document.getElementById('link').value;
+
+    var xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState == 4 && this.status == 200) {
+            window.location = '/home';
+        }
+    };
+    xhttp.open("PUT", "/updateProblem/" + id, true);
+    xhttp.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+    xhttp.send("problem= " + problem + "&solution= " + solution + "&link= " + link);
+}
+
+// helper function to open modal and populate data for update
+function Update(id, problem, solution, link) {
+    document.getElementById('id').value = id;
+    document.getElementById('problem').value = problem;
+    document.getElementById('solution').value = solution;
+    document.getElementById('link').value = link;
+
+    document.getElementById('addProblemBtn').click();
+    document.getElementById('addData').style.display = "none";
+    document.getElementById('updateData').style.display = "block";
+}
+
+// On reload retrieving data
+window.onload = () => {
+    getAllData();
+}
+</script>
+
+<!-- BOOTSTRAP SCRIPTS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js" integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js" integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV" crossorigin="anonymous"></script>
+</html>
