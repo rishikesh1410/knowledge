@@ -21,6 +21,10 @@ const error = (msg) => {
     return {"error" : msg};
 }
 
+const success = (msg) => {
+    return {"success" : msg};
+}
+
 app.use(bodyParser.json());
 app.set('view engine', 'ejs');
 
@@ -28,7 +32,8 @@ app.set('view engine', 'ejs');
 /***************** HANDLING ROUTES ****************/
 
 app.get('/home', (req,res) => {
-    res.render('home');
+    console.log(req.query.message);
+    res.render('home', {"message" : req.query.message});
 })
 
 /*****************  / HANDLING ROUTES ****************/
@@ -97,7 +102,7 @@ app.put('/updateProblem/:id', urlencodedParser, function(req, res) {
             if (err) {
                 res.json(error("Failed to execute query"));
             }
-            res.json(result);
+            res.json(success("Data Updated Successfully"));
         });
     });
 });
@@ -116,7 +121,7 @@ app.delete('/deleteProblem/:id', function(req, res) {
             if (err) {
                 res.json(error("Failed to execute query"));
             }
-            res.json(result);
+            res.json(success("Data Deleted Successfully"));
         });
     });
 });
@@ -139,11 +144,11 @@ app.post('/addProblem', urlencodedParser, function(req, res) {
             if (err) {
                 res.json(error("Failed to execute query"));
             }
-            res.json(result);
+            res.json(success("Data Added Successfully"));
         });
     });
 });
 
 /*****************  / REST API ****************/
 
-app.listen(port, () => console.log(`Example app listening on port port!`))
+app.listen(port, () => console.log(`App is running on port ${port}`))
