@@ -22,7 +22,14 @@ Table (name = 'problems')
 
 # Screenshots
 
+# Home page
 ![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/allProblems.png?raw=true)
+
+# Add a problem
 ![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/addProblem.png?raw=true)
+
+# Update a problem
 ![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/updateProblem.png?raw=true)
+
+# Search problems by problem name
 ![alt text](https://github.com/rishikesh1410/knowledge/blob/main/public/images/searchProblems.png?raw=true)
